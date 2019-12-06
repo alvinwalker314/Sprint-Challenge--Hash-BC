@@ -1,12 +1,9 @@
 import hashlib
 import requests
-
+import json
 import sys
-
 from uuid import uuid4
-
 from timeit import default_timer as timer
-
 import random
 
 
@@ -19,13 +16,18 @@ def proof_of_work(last_proof):
     - p is the previous proof, and p' is the new proof
     - Use the same method to generate SHA-256 hashes as the examples in class
     """
-
     start = timer()
-
     print("Searching for next proof")
-    proof = 0
-    #  TODO: Your code here
-
+    # Random starting point
+    proof = random.randint(1, 100)
+    # Convert last proof into unicode
+    last_hash_uni = str(last_proof).encode()
+    # Hash the last proof
+    last_hash = hashlib.sha256(last_hash_uni).hexdigest()
+    # Attempt to validate it
+    while valid_proof(last_hash, proof) is False:
+        # increment proof by a random number
+        proof += random.randint(1, 100)
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
@@ -38,9 +40,14 @@ def valid_proof(last_hash, proof):
 
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
-
-    # TODO: Your code here!
-    pass
+    # Encode guess
+    guess = f'{proof}'.encode()
+    # Hash it
+    new_hash = hashlib.sha256(guess).hexdigest()
+    print(f'Prev hash end: {last_hash[-1:-7:-1]}')
+    print(f'New hash start: {new_hash[0:6]}')
+    # Check whether or not the last 6 of the prev has is equal to first 6 of new hash
+    return last_hash[-6::1] == new_hash[0:6]
 
 
 if __name__ == '__main__':

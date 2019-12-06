@@ -92,10 +92,6 @@ def hash_table_retrieve(hash_table, key):
             return current_pair.value
         current_pair = current_pair.next
 
-
-# '''
-# Fill this in
-# '''
 def hash_table_resize(hash_table):
     new_hash_table = HashTable(2 * len(hash_table.storage))
 
